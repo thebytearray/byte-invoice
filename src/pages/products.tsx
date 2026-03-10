@@ -18,6 +18,7 @@ import { FiEdit, FiPackage, FiPlus, FiTrash2, FiX } from 'react-icons/fi'
 import { useStore } from '@/lib/store'
 import { toaster } from '@/components/ui/toaster'
 import type { Product } from '@/types'
+import { ResponsiveList } from '@/components/layout/responsive-list'
 import { ScrollableTable } from '@/components/layout/scrollable-table'
 import { EmptyState } from '@/components/saas/empty-state'
 import { PageHeader } from '@/components/saas/page-header'
@@ -156,7 +157,7 @@ export function ProductsPage() {
         }
       >
         <Flex direction="column" gap="4" mb="6">
-          <Box maxW="xl">
+          <Box w="full" maxW={{ base: 'full', md: 'xl' }}>
             <Input
               placeholder="Search by name, category, SKU, or description"
               value={searchTerm}
@@ -184,57 +185,117 @@ export function ProductsPage() {
             onAction={searchTerm ? clearSearch : () => setDialogOpen(true)}
           />
         ) : (
-          <ScrollableTable>
-            <Table.Root size="sm">
-              <Table.Header>
-                <Table.Row>
-                <Table.ColumnHeader>Name</Table.ColumnHeader>
-                <Table.ColumnHeader>SKU</Table.ColumnHeader>
-                <Table.ColumnHeader>Category</Table.ColumnHeader>
-                <Table.ColumnHeader>Description</Table.ColumnHeader>
-                <Table.ColumnHeader>Price</Table.ColumnHeader>
-                <Table.ColumnHeader>Actions</Table.ColumnHeader>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {filteredProducts.map((product) => (
-                <Table.Row key={product.id}>
-                  <Table.Cell fontWeight="medium">{product.name}</Table.Cell>
-                  <Table.Cell>{product.sku}</Table.Cell>
-                  <Table.Cell>{product.category}</Table.Cell>
-                  <Table.Cell>
-                    <Text maxW="sm" fontSize="sm" color="fg.muted">
-                      {product.description}
-                    </Text>
-                  </Table.Cell>
-                  <Table.Cell>
-                    {product.price !== undefined ? `$${product.price.toFixed(2)}` : 'Variable pricing'}
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Flex gap="2">
-                      <IconButton aria-label="Edit" size="sm" variant="ghost" onClick={() => handleEdit(product)}>
-                        <Icon as={FiEdit} />
-                      </IconButton>
-                      <IconButton
-                        aria-label="Delete"
-                        size="sm"
-                        variant="ghost"
-                        colorPalette="red"
-                        onClick={() => handleDeleteClick(product)}
-                      >
-                        <Icon as={FiTrash2} />
-                      </IconButton>
+          <ResponsiveList
+            cards={
+              <Flex direction="column" gap="3">
+                {filteredProducts.map((product) => (
+                  <Box
+                    key={product.id}
+                    rounded="2xl"
+                    borderWidth="1px"
+                    borderColor="border"
+                    p="4"
+                    bg="bg.subtle"
+                  >
+                    <Flex direction="column" gap="2">
+                      <Text fontWeight="medium">{product.name}</Text>
+                      <Flex gap="2" fontSize="sm" color="fg.muted" flexWrap="wrap">
+                        <Text>{product.sku}</Text>
+                        <Text>•</Text>
+                        <Text>{product.category}</Text>
+                      </Flex>
+                      <Text fontSize="sm" color="fg.muted" lineClamp={2}>
+                        {product.description}
+                      </Text>
+                      <Flex justify="space-between" align="center" flexWrap="wrap" gap="2">
+                        <Text fontSize="sm" fontWeight="medium">
+                          {product.price !== undefined ? `$${product.price.toFixed(2)}` : 'Variable pricing'}
+                        </Text>
+                        <Flex gap="2">
+                          <IconButton
+                            aria-label="Edit"
+                            size="sm"
+                            variant="ghost"
+                            minW="10"
+                            minH="10"
+                            onClick={() => handleEdit(product)}
+                          >
+                            <Icon as={FiEdit} />
+                          </IconButton>
+                          <IconButton
+                            aria-label="Delete"
+                            size="sm"
+                            variant="ghost"
+                            colorPalette="red"
+                            minW="10"
+                            minH="10"
+                            onClick={() => handleDeleteClick(product)}
+                          >
+                            <Icon as={FiTrash2} />
+                          </IconButton>
+                        </Flex>
+                      </Flex>
                     </Flex>
-                  </Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-            </Table.Root>
-          </ScrollableTable>
+                  </Box>
+                ))}
+              </Flex>
+            }
+            table={
+              <ScrollableTable>
+                <Table.Root size="sm">
+                  <Table.Header>
+                    <Table.Row>
+                    <Table.ColumnHeader>Name</Table.ColumnHeader>
+                    <Table.ColumnHeader>SKU</Table.ColumnHeader>
+                    <Table.ColumnHeader>Category</Table.ColumnHeader>
+                    <Table.ColumnHeader>Description</Table.ColumnHeader>
+                    <Table.ColumnHeader>Price</Table.ColumnHeader>
+                    <Table.ColumnHeader>Actions</Table.ColumnHeader>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {filteredProducts.map((product) => (
+                    <Table.Row key={product.id}>
+                      <Table.Cell fontWeight="medium">{product.name}</Table.Cell>
+                      <Table.Cell>{product.sku}</Table.Cell>
+                      <Table.Cell>{product.category}</Table.Cell>
+                      <Table.Cell>
+                        <Text maxW="sm" fontSize="sm" color="fg.muted">
+                          {product.description}
+                        </Text>
+                      </Table.Cell>
+                      <Table.Cell>
+                        {product.price !== undefined ? `$${product.price.toFixed(2)}` : 'Variable pricing'}
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Flex gap="2">
+                          <IconButton aria-label="Edit" size="sm" variant="ghost" minW="10" minH="10" onClick={() => handleEdit(product)}>
+                            <Icon as={FiEdit} />
+                          </IconButton>
+                          <IconButton
+                            aria-label="Delete"
+                            size="sm"
+                            variant="ghost"
+                            colorPalette="red"
+                            minW="10"
+                            minH="10"
+                            onClick={() => handleDeleteClick(product)}
+                          >
+                            <Icon as={FiTrash2} />
+                          </IconButton>
+                        </Flex>
+                      </Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+                </Table.Root>
+              </ScrollableTable>
+            }
+          />
         )}
       </SectionCard>
 
-      <Dialog.Root open={dialogOpen} onOpenChange={(e) => (!e.open ? handleDialogClose() : setDialogOpen(true))} size="xl" placement="center">
+      <Dialog.Root open={dialogOpen} onOpenChange={(e) => (!e.open ? handleDialogClose() : setDialogOpen(true))} size={{ base: 'full', md: 'xl' }} placement="center">
         <Dialog.Backdrop />
         <Dialog.Positioner>
           <Dialog.Content>

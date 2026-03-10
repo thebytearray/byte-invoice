@@ -253,7 +253,7 @@ export function InvoiceEditor({
   return (
     <form onSubmit={handleSubmit}>
       <Grid templateColumns={{ md: '1fr', xl: '1.3fr 0.7fr' }} gap={{ base: '6', md: '8' }}>
-        <Flex direction="column" gap="6">
+        <Flex direction="column" gap="6" minW="0">
           <FormSection title="Invoice details" description="Choose the client, set dates, and define the working status.">
             <Grid templateColumns={{ md: '1fr 1fr' }} gap="4">
               <Box gridColumn={{ md: '1 / -1' }}>
@@ -279,7 +279,7 @@ export function InvoiceEditor({
                   </Text>
                 )}
               </Box>
-              <Box>
+              <Box minW="0">
                 <Text fontSize="sm" fontWeight="medium" mb="2">
                   Issue date
                 </Text>
@@ -302,8 +302,8 @@ export function InvoiceEditor({
                         return undefined
                       }}
                     >
-                      <DatePicker.Control>
-                        <DatePicker.Input placeholder="Select date" />
+                      <DatePicker.Control w="full" minW="0">
+                        <DatePicker.Input placeholder="Select date" flex="1" minW="0" />
                         <DatePicker.IndicatorGroup>
                           <DatePicker.Trigger asChild>
                             <Button variant="ghost" px="2" aria-label="Open calendar">
@@ -337,7 +337,7 @@ export function InvoiceEditor({
                   )}
                 />
               </Box>
-              <Box>
+              <Box minW="0">
                 <Text fontSize="sm" fontWeight="medium" mb="2">
                   Due date
                 </Text>
@@ -360,8 +360,8 @@ export function InvoiceEditor({
                         return undefined
                       }}
                     >
-                      <DatePicker.Control>
-                        <DatePicker.Input placeholder="Select date" />
+                      <DatePicker.Control w="full" minW="0">
+                        <DatePicker.Input placeholder="Select date" flex="1" minW="0" />
                         <DatePicker.IndicatorGroup>
                           <DatePicker.Trigger asChild>
                             <Button variant="ghost" px="2" aria-label="Open calendar">
@@ -426,7 +426,7 @@ export function InvoiceEditor({
             </Flex>
             <Flex direction="column" gap="4">
               {fields.map((field, index) => (
-                <Box key={field.id} rounded="2xl" borderWidth="1px" borderColor="border" p="4" bg="bg.subtle">
+                <Box key={field.id} rounded="2xl" borderWidth="1px" borderColor="border" p="4" bg="bg.subtle" minW="0">
                   <Flex justify="space-between" align="center" mb="4">
                     <Text fontWeight="medium">Item {index + 1}</Text>
                     {fields.length > 1 && (
@@ -523,7 +523,7 @@ export function InvoiceEditor({
           </FormSection>
         </Flex>
 
-        <Box>
+        <Box minW="0">
           <SectionCard
             title="Invoice summary"
             description="Preview the client context, line items, totals, and current status."

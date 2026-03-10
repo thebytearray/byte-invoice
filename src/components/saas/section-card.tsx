@@ -14,7 +14,8 @@ export function SectionCard({ title, description, endContent, children, bodyProp
       {(title || description || endContent) && (
         <Card.Header
           display="flex"
-          alignItems="flex-start"
+          flexDirection={{ base: 'column', sm: 'row' }}
+          alignItems={{ base: 'stretch', sm: 'flex-start' }}
           justifyContent="space-between"
           gap="3"
           borderBottomWidth="1px"
@@ -22,7 +23,7 @@ export function SectionCard({ title, description, endContent, children, bodyProp
           px={{ base: '4', md: '5' }}
           py={{ base: '3', md: '4' }}
         >
-          <Flex direction="column" gap="1">
+          <Flex direction="column" gap="1" minW="0">
             {title && (
               <Card.Title fontSize="lg" fontWeight="semibold">
                 {title}
@@ -34,7 +35,11 @@ export function SectionCard({ title, description, endContent, children, bodyProp
               </Card.Description>
             )}
           </Flex>
-          {endContent}
+          {endContent && (
+            <Flex alignSelf={{ base: 'stretch', sm: 'auto' }} flexShrink={0}>
+              {endContent}
+            </Flex>
+          )}
         </Card.Header>
       )}
       <Card.Body p={{ base: '4', md: '5' }} {...bodyProps}>

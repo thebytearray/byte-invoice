@@ -7,6 +7,7 @@ import { useStore } from '@/lib/store'
 import { formatCurrency } from '@/utils/calculations'
 import { DATE_FORMAT } from '@/constants'
 import { toaster } from '@/components/ui/toaster'
+import { ResponsiveList } from '@/components/layout/responsive-list'
 import { ScrollableTable } from '@/components/layout/scrollable-table'
 import { EmptyState } from '@/components/saas/empty-state'
 import { MetricCard } from '@/components/saas/metric-card'
@@ -130,7 +131,7 @@ export function InvoicesPage() {
         }
       >
         <Flex direction="column" gap="4" mb="6">
-          <Box maxW="xl">
+          <Box w="full" maxW={{ base: 'full', md: 'xl' }}>
             <Input
               placeholder="Search by invoice number or client name"
               value={searchTerm}
@@ -166,66 +167,131 @@ export function InvoicesPage() {
             actionHref={!hasActiveFilters ? '/invoices/new' : undefined}
           />
         ) : (
-          <ScrollableTable>
-            <Table.Root size="sm">
-              <Table.Header>
-                <Table.Row>
-                <Table.ColumnHeader>Invoice</Table.ColumnHeader>
-                <Table.ColumnHeader>Client</Table.ColumnHeader>
-                <Table.ColumnHeader>Issue date</Table.ColumnHeader>
-                <Table.ColumnHeader>Due date</Table.ColumnHeader>
-                <Table.ColumnHeader>Amount</Table.ColumnHeader>
-                <Table.ColumnHeader>Status</Table.ColumnHeader>
-                <Table.ColumnHeader>Actions</Table.ColumnHeader>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {filteredInvoices
-                .sort((a, b) => new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime())
-                .map((invoice) => (
-                  <Table.Row key={invoice.id}>
-                    <Table.Cell>
-                      <Link to={`/invoices/${invoice.id}`}>
-                        <Text fontWeight="medium" color="blue.500" _hover={{ color: 'blue.400' }}>
-                          {invoice.invoiceNumber}
+          <ResponsiveList
+            cards={
+              <Flex direction="column" gap="3">
+                {filteredInvoices
+                  .sort((a, b) => new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime())
+                  .map((invoice) => (
+                    <Box
+                      key={invoice.id}
+                      rounded="2xl"
+                      borderWidth="1px"
+                      borderColor="border"
+                      p="4"
+                      bg="bg.subtle"
+                    >
+                      <Flex direction="column" gap="2">
+                        <Link to={`/invoices/${invoice.id}`}>
+                          <Text fontWeight="medium" color="blue.500" _hover={{ color: 'blue.400' }}>
+                            {invoice.invoiceNumber}
+                          </Text>
+                        </Link>
+                        <Text fontSize="sm" color="fg.muted">
+                          {invoice.clientName}
                         </Text>
-                      </Link>
-                    </Table.Cell>
-                    <Table.Cell>{invoice.clientName}</Table.Cell>
-                    <Table.Cell>{format(new Date(invoice.issueDate), DATE_FORMAT)}</Table.Cell>
-                    <Table.Cell>{format(new Date(invoice.dueDate), DATE_FORMAT)}</Table.Cell>
-                    <Table.Cell>{formatCurrency(invoice.total)}</Table.Cell>
-                    <Table.Cell>
-                      <StatusChip status={invoice.status} />
-                    </Table.Cell>
-                    <Table.Cell>
-                      <Flex gap="2">
-                        <IconButton asChild aria-label="View" size="sm" variant="ghost">
-                          <Link to={`/invoices/${invoice.id}`}>
-                            <Icon as={FiEye} />
-                          </Link>
-                        </IconButton>
-                        <IconButton asChild aria-label="Edit" size="sm" variant="ghost">
-                          <Link to={`/invoices/edit/${invoice.id}`}>
-                            <Icon as={FiEdit} />
-                          </Link>
-                        </IconButton>
-                        <IconButton
-                          aria-label="Delete"
-                          size="sm"
-                          variant="ghost"
-                          colorPalette="red"
-                          onClick={() => handleDeleteClick(invoice.id)}
-                        >
-                          <Icon as={FiTrash2} />
-                        </IconButton>
+                        <Flex gap="4" fontSize="sm" color="fg.muted" flexWrap="wrap">
+                          <Text>Due {format(new Date(invoice.dueDate), DATE_FORMAT)}</Text>
+                          <Text fontWeight="semibold" color="fg">
+                            {formatCurrency(invoice.total)}
+                          </Text>
+                        </Flex>
+                        <Flex justify="space-between" align="center" flexWrap="wrap" gap="2">
+                          <StatusChip status={invoice.status} />
+                          <Flex gap="2">
+                            <IconButton asChild aria-label="View" size="sm" variant="ghost" minW="10" minH="10">
+                              <Link to={`/invoices/${invoice.id}`}>
+                                <Icon as={FiEye} />
+                              </Link>
+                            </IconButton>
+                            <IconButton asChild aria-label="Edit" size="sm" variant="ghost" minW="10" minH="10">
+                              <Link to={`/invoices/edit/${invoice.id}`}>
+                                <Icon as={FiEdit} />
+                              </Link>
+                            </IconButton>
+                            <IconButton
+                              aria-label="Delete"
+                              size="sm"
+                              variant="ghost"
+                              colorPalette="red"
+                              minW="10"
+                              minH="10"
+                              onClick={() => handleDeleteClick(invoice.id)}
+                            >
+                              <Icon as={FiTrash2} />
+                            </IconButton>
+                          </Flex>
+                        </Flex>
                       </Flex>
-                    </Table.Cell>
+                    </Box>
+                  ))}
+              </Flex>
+            }
+            table={
+              <ScrollableTable>
+                <Table.Root size="sm">
+                  <Table.Header>
+                    <Table.Row>
+                    <Table.ColumnHeader>Invoice</Table.ColumnHeader>
+                    <Table.ColumnHeader>Client</Table.ColumnHeader>
+                    <Table.ColumnHeader>Issue date</Table.ColumnHeader>
+                    <Table.ColumnHeader>Due date</Table.ColumnHeader>
+                    <Table.ColumnHeader>Amount</Table.ColumnHeader>
+                    <Table.ColumnHeader>Status</Table.ColumnHeader>
+                    <Table.ColumnHeader>Actions</Table.ColumnHeader>
                   </Table.Row>
-                ))}
-            </Table.Body>
-            </Table.Root>
-          </ScrollableTable>
+                </Table.Header>
+                <Table.Body>
+                  {filteredInvoices
+                    .sort((a, b) => new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime())
+                    .map((invoice) => (
+                      <Table.Row key={invoice.id}>
+                        <Table.Cell>
+                          <Link to={`/invoices/${invoice.id}`}>
+                            <Text fontWeight="medium" color="blue.500" _hover={{ color: 'blue.400' }}>
+                              {invoice.invoiceNumber}
+                            </Text>
+                          </Link>
+                        </Table.Cell>
+                        <Table.Cell>{invoice.clientName}</Table.Cell>
+                        <Table.Cell>{format(new Date(invoice.issueDate), DATE_FORMAT)}</Table.Cell>
+                        <Table.Cell>{format(new Date(invoice.dueDate), DATE_FORMAT)}</Table.Cell>
+                        <Table.Cell>{formatCurrency(invoice.total)}</Table.Cell>
+                        <Table.Cell>
+                          <StatusChip status={invoice.status} />
+                        </Table.Cell>
+                        <Table.Cell>
+                          <Flex gap="2">
+                            <IconButton asChild aria-label="View" size="sm" variant="ghost" minW="10" minH="10">
+                              <Link to={`/invoices/${invoice.id}`}>
+                                <Icon as={FiEye} />
+                              </Link>
+                            </IconButton>
+                            <IconButton asChild aria-label="Edit" size="sm" variant="ghost" minW="10" minH="10">
+                              <Link to={`/invoices/edit/${invoice.id}`}>
+                                <Icon as={FiEdit} />
+                              </Link>
+                            </IconButton>
+                            <IconButton
+                              aria-label="Delete"
+                              size="sm"
+                              variant="ghost"
+                              colorPalette="red"
+                              minW="10"
+                              minH="10"
+                              onClick={() => handleDeleteClick(invoice.id)}
+                            >
+                              <Icon as={FiTrash2} />
+                            </IconButton>
+                          </Flex>
+                        </Table.Cell>
+                      </Table.Row>
+                    ))}
+                </Table.Body>
+                </Table.Root>
+              </ScrollableTable>
+            }
+          />
         )}
       </SectionCard>
 

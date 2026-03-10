@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window'
+import { platform } from '@tauri-apps/plugin-os'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { StoreInitializer } from '@/components/StoreInitializer'
 import {
@@ -37,9 +38,17 @@ const MIN_WINDOW_HEIGHT = 700
 
 export default function App() {
   useEffect(() => {
-    getCurrentWindow()
-      .setMinSize(new LogicalSize(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT))
-      .catch(() => { /* Not in Tauri, ignore */ })
+    const applyMinSize = async () => {
+      try {
+        const p = platform()
+        if (p === 'android' || p === 'ios') return
+        const win = getCurrentWindow()
+        await win.setMinSize(new LogicalSize(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT))
+      } catch {
+        /* Not in Tauri or mobile, ignore */
+      }
+    }
+    applyMinSize()
   }, [])
 
   return (

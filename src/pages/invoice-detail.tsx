@@ -268,7 +268,7 @@ export function InvoiceDetailPage() {
               </Table.Root>
             </ScrollableTable>
 
-            <Box ml="auto" maxW="md" rounded="2xl" borderWidth="1px" borderColor="border" p="4" bg="bg.subtle">
+            <Box ml={{ base: 0, md: 'auto' }} maxW={{ base: 'full', md: 'md' }} w={{ base: 'full', md: 'auto' }} rounded="2xl" borderWidth="1px" borderColor="border" p="4" bg="bg.subtle">
               <Flex direction="column" gap="3" fontSize="sm" color="fg.muted">
                 <Flex justify="space-between">
                   <Text>Subtotal</Text>

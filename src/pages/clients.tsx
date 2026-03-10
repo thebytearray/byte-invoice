@@ -17,6 +17,7 @@ import { FiEdit, FiMail, FiMapPin, FiPhone, FiPlus, FiTrash2, FiUsers, FiX } fro
 import { useStore } from '@/lib/store'
 import { toaster } from '@/components/ui/toaster'
 import type { Client } from '@/types'
+import { ResponsiveList } from '@/components/layout/responsive-list'
 import { ScrollableTable } from '@/components/layout/scrollable-table'
 import { EmptyState } from '@/components/saas/empty-state'
 import { PageHeader } from '@/components/saas/page-header'
@@ -166,7 +167,7 @@ export function ClientsPage() {
         }
       >
         <Flex direction="column" gap="4" mb="6">
-          <Box maxW="xl">
+          <Box w="full" maxW={{ base: 'full', md: 'xl' }}>
             <Input
               placeholder="Search by name, email, or city"
               value={searchTerm}
@@ -194,74 +195,133 @@ export function ClientsPage() {
             onAction={searchTerm ? clearSearch : () => setDialogOpen(true)}
           />
         ) : (
-          <ScrollableTable>
-            <Table.Root size="sm">
-              <Table.Header>
-                <Table.Row>
-                <Table.ColumnHeader>Client</Table.ColumnHeader>
-                <Table.ColumnHeader>Contact</Table.ColumnHeader>
-                <Table.ColumnHeader>Location</Table.ColumnHeader>
-                <Table.ColumnHeader>Actions</Table.ColumnHeader>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {filteredClients
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((client) => (
-                  <Table.Row key={client.id}>
-                    <Table.Cell>
-                      <Text fontWeight="medium">{client.name}</Text>
-                      <Text fontSize="xs" color="fg.muted" mt="1">
-                        {client.address}
-                      </Text>
-                    </Table.Cell>
-                    <Table.Cell>
-                      <Flex direction="column" gap="2" fontSize="sm">
-                        <Flex align="center" gap="2">
-                          <Icon as={FiMail} boxSize="3.5" color="fg.muted" />
+          <ResponsiveList
+            cards={
+              <Flex direction="column" gap="3">
+                {filteredClients
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((client) => (
+                    <Box
+                      key={client.id}
+                      rounded="2xl"
+                      borderWidth="1px"
+                      borderColor="border"
+                      p="4"
+                      bg="bg.subtle"
+                    >
+                      <Flex direction="column" gap="2">
+                        <Text fontWeight="medium">{client.name}</Text>
+                        <Flex align="center" gap="2" fontSize="sm" color="fg.muted">
+                          <Icon as={FiMail} boxSize="3.5" />
                           <Text>{client.email}</Text>
                         </Flex>
-                        {client.phone && (
-                          <Flex align="center" gap="2" color="fg.muted">
-                            <Icon as={FiPhone} boxSize="3.5" />
-                            <Text>{client.phone}</Text>
-                          </Flex>
-                        )}
+                        <Flex align="center" gap="2" fontSize="sm" color="fg.muted">
+                          <Icon as={FiMapPin} boxSize="3.5" />
+                          <Text>
+                            {client.city}, {client.state}, {client.country}
+                          </Text>
+                        </Flex>
+                        <Flex gap="2" mt="2">
+                          <IconButton
+                            aria-label="Edit"
+                            size="sm"
+                            variant="ghost"
+                            minW="10"
+                            minH="10"
+                            onClick={() => handleEdit(client)}
+                          >
+                            <Icon as={FiEdit} />
+                          </IconButton>
+                          <IconButton
+                            aria-label="Delete"
+                            size="sm"
+                            variant="ghost"
+                            colorPalette="red"
+                            minW="10"
+                            minH="10"
+                            onClick={() => handleDeleteClick(client)}
+                          >
+                            <Icon as={FiTrash2} />
+                          </IconButton>
+                        </Flex>
                       </Flex>
-                    </Table.Cell>
-                    <Table.Cell>
-                      <Flex align="center" gap="2" fontSize="sm" color="fg.muted">
-                        <Icon as={FiMapPin} boxSize="3.5" />
-                        <Text>
-                          {client.city}, {client.state}, {client.country}
-                        </Text>
-                      </Flex>
-                    </Table.Cell>
-                    <Table.Cell>
-                      <Flex gap="2">
-                        <IconButton aria-label="Edit" size="sm" variant="ghost" onClick={() => handleEdit(client)}>
-                          <Icon as={FiEdit} />
-                        </IconButton>
-                        <IconButton
-                          aria-label="Delete"
-                          size="sm"
-                          variant="ghost"
-                          colorPalette="red"
-                          onClick={() => handleDeleteClick(client)}
-                        >
-                          <Icon as={FiTrash2} />
-                        </IconButton>
-                      </Flex>
-                    </Table.Cell>
+                    </Box>
+                  ))}
+              </Flex>
+            }
+            table={
+              <ScrollableTable>
+                <Table.Root size="sm">
+                  <Table.Header>
+                    <Table.Row>
+                    <Table.ColumnHeader>Client</Table.ColumnHeader>
+                    <Table.ColumnHeader>Contact</Table.ColumnHeader>
+                    <Table.ColumnHeader>Location</Table.ColumnHeader>
+                    <Table.ColumnHeader>Actions</Table.ColumnHeader>
                   </Table.Row>
-                ))}
-            </Table.Body>
-            </Table.Root>
-          </ScrollableTable>
+                </Table.Header>
+                <Table.Body>
+                  {filteredClients
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map((client) => (
+                      <Table.Row key={client.id}>
+                        <Table.Cell>
+                          <Text fontWeight="medium">{client.name}</Text>
+                          <Text fontSize="xs" color="fg.muted" mt="1">
+                            {client.address}
+                          </Text>
+                        </Table.Cell>
+                        <Table.Cell>
+                          <Flex direction="column" gap="2" fontSize="sm">
+                            <Flex align="center" gap="2">
+                              <Icon as={FiMail} boxSize="3.5" color="fg.muted" />
+                              <Text>{client.email}</Text>
+                            </Flex>
+                            {client.phone && (
+                              <Flex align="center" gap="2" color="fg.muted">
+                                <Icon as={FiPhone} boxSize="3.5" />
+                                <Text>{client.phone}</Text>
+                              </Flex>
+                            )}
+                          </Flex>
+                        </Table.Cell>
+                        <Table.Cell>
+                          <Flex align="center" gap="2" fontSize="sm" color="fg.muted">
+                            <Icon as={FiMapPin} boxSize="3.5" />
+                            <Text>
+                              {client.city}, {client.state}, {client.country}
+                            </Text>
+                          </Flex>
+                        </Table.Cell>
+                        <Table.Cell>
+                          <Flex gap="2">
+                            <IconButton aria-label="Edit" size="sm" variant="ghost" minW="10" minH="10" onClick={() => handleEdit(client)}>
+                              <Icon as={FiEdit} />
+                            </IconButton>
+                            <IconButton
+                              aria-label="Delete"
+                              size="sm"
+                              variant="ghost"
+                              colorPalette="red"
+                              minW="10"
+                              minH="10"
+                              onClick={() => handleDeleteClick(client)}
+                            >
+                              <Icon as={FiTrash2} />
+                            </IconButton>
+                          </Flex>
+                        </Table.Cell>
+                      </Table.Row>
+                    ))}
+                </Table.Body>
+                </Table.Root>
+              </ScrollableTable>
+            }
+          />
         )}
       </SectionCard>
 
-      <Dialog.Root open={dialogOpen} onOpenChange={(e) => (!e.open ? handleDialogClose() : setDialogOpen(true))} size="xl" placement="center">
+      <Dialog.Root open={dialogOpen} onOpenChange={(e) => (!e.open ? handleDialogClose() : setDialogOpen(true))} size={{ base: 'full', md: 'xl' }} placement="center">
         <Dialog.Backdrop />
         <Dialog.Positioner>
           <Dialog.Content>

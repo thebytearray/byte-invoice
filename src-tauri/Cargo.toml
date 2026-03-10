@@ -27,6 +27,7 @@ tauri = { version = "2.10.3", features = [] }
 tauri-plugin-dialog = "2"
 tauri-plugin-fs = "2"
 tauri-plugin-log = "2"
+tauri-plugin-os = "2"
 uuid = { version = "1.11", features = ["v4", "serde"] }
 lettre = { version = "0.11", default-features = false, features = ["smtp-transport", "builder", "hostname", "rustls-tls"] }
 base64 = "0.22"

@@ -88,13 +88,18 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             borderColor="border"
             bg="bg/95"
             backdropFilter="blur(12px)"
+            pt="calc(0.75rem + env(safe-area-inset-top, 0px))"
+            pb="3"
+            px={{ base: '4', md: '6' }}
           >
-            <Flex align="center" justify="space-between" py="3" px={{ base: '4', md: '6' }} w="full">
+            <Flex align="center" justify="space-between" w="full">
               <Flex align="center" gap="3">
                 <IconButton
                   display={{ md: 'none' }}
                   aria-label="Open menu"
                   variant="ghost"
+                  minW="10"
+                  minH="10"
                   onClick={() => setMobileOpen(true)}
                 >
                   <Icon as={FiMenu} boxSize="5" />
@@ -115,7 +120,13 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           <ScrollArea.Root flex="1" minH="0" minW="0" size="sm" variant="hover">
             <ScrollArea.Viewport>
               <ScrollArea.Content>
-                <Box py={{ base: '4', md: '5' }} px={{ base: '4', md: '6' }} w="full">
+                <Box
+                  py={{ base: '4', md: '5' }}
+                  pt={{ base: '4', md: '5' }}
+                  pb={{ base: 'calc(1rem + env(safe-area-inset-bottom, 0px))', md: 'calc(1.25rem + env(safe-area-inset-bottom, 0px))' }}
+                  px={{ base: '4', md: '6' }}
+                  w="full"
+                >
                   {children}
                 </Box>
               </ScrollArea.Content>
@@ -131,7 +142,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             <Drawer.Header>
               <Flex align="center" justify="space-between" w="full">
                 <AppLogo />
-                <IconButton aria-label="Close" variant="ghost" onClick={() => setMobileOpen(false)}>
+                <IconButton aria-label="Close" variant="ghost" minW="10" minH="10" onClick={() => setMobileOpen(false)}>
                   <Icon as={FiX} boxSize="5" />
                 </IconButton>
               </Flex>

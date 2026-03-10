@@ -190,7 +190,7 @@ export function SettingsPage() {
       />
 
       <Tabs.Root defaultValue="company" variant="line" fitted>
-        <Tabs.List mb="4" borderBottomWidth="1px" borderColor="border">
+        <Tabs.List mb="4" borderBottomWidth="1px" borderColor="border" overflowX="auto" flexWrap="nowrap" minW="0">
           <Tabs.Trigger value="company" display="flex" alignItems="center" justifyContent="center" gap="2">
             <Icon as={FiBriefcase} />
             Company

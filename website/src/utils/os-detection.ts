@@ -30,7 +30,7 @@ export async function detectMacArch(): Promise<MacArch> {
         return values.architecture === "arm" ? "arm64" : "x64"
       }
     } catch {
- 
+      // userAgentData not supported, fall through to WebGL detection
     }
   }
 
@@ -48,7 +48,7 @@ export async function detectMacArch(): Promise<MacArch> {
       }
     }
   } catch {
-   
+    // WebGL detection failed, use default
   }
 
    return "arm64"
@@ -62,9 +62,8 @@ export function useDetectedOS(): { os: DetectedOS; macArch: MacArch } {
 
   useEffect(() => {
     const os = detectOS()
-    setState((s) => ({ ...s, os }))
     detectMacArch().then((macArch) => {
-      setState((s) => ({ ...s, macArch }))
+      setState({ os, macArch })
     })
   }, [])
 

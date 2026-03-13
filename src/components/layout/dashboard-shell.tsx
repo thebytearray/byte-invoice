@@ -93,18 +93,6 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               )
             })}
           </Flex>
-          <Box mt="auto" minW="0">
-            {!sidebarCollapsed && (
-              <Box rounded="3xl" borderWidth="1px" borderColor="border" p="4" bg="bg.subtle" minW="0">
-                <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.24em" color="fg.muted" whiteSpace="nowrap">
-                  Workspace
-                </Text>
-                <Text mt="2" fontSize="sm" color="fg.muted" lineClamp={2}>
-                  Keep invoices, clients, settings, and fulfillment in one focused SaaS workspace.
-                </Text>
-              </Box>
-            )}
-          </Box>
         </Box>
 
         <Flex direction="column" h="100vh" minW="0" flex="1">

@@ -108,6 +108,10 @@ const styles = StyleSheet.create({
   notes: {
     marginTop: 30,
   },
+  notesText: {
+    marginBottom: 3,
+    lineHeight: 1.5,
+  },
 })
 
 export interface InvoicePDFProps {
@@ -221,7 +225,7 @@ export const InvoicePDFDocument = ({ invoice, company, client }: InvoicePDFProps
         {invoice.notes && (
           <View style={styles.notes}>
             <Text style={styles.subtitle}>Notes:</Text>
-            <Text style={styles.text}>{invoice.notes}</Text>
+            <Text style={[styles.text, styles.notesText]}>{invoice.notes}</Text>
           </View>
         )}
       </Page>

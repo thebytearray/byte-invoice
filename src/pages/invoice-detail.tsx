@@ -344,7 +344,7 @@ export function InvoiceDetailPage() {
                 <Text fontSize="sm" fontWeight="medium">
                   Notes
                 </Text>
-                <Text mt="3" whiteSpace="pre-wrap" fontSize="sm" lineHeight="7" color="fg.muted">
+                <Text mt="3" whiteSpace="pre-wrap" fontSize="sm" lineHeight="1.5" color="fg.muted">
                   {invoice.notes}
                 </Text>
               </Box>

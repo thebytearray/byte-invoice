@@ -19,8 +19,6 @@
     "@chakra-ui/react": "^3.34.0",
     "@emotion/react": "^11.14.0",
     "@hookform/resolvers": "^5.2.2",
-    "@react-email/components": "^0.0.32",
-    "@react-email/render": "2.0.4",
     "@react-pdf/renderer": "^4.3.0",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-dialog": "^2.6.0",

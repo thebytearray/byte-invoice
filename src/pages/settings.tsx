@@ -186,13 +186,8 @@ export function SettingsPage() {
     setIsLoadingPreview(true)
     try {
       const companyName = company.name || 'Acme Corp'
-      const companyLogoUrl =
-        company.logo && (company.logo.startsWith('data:') || company.logo.startsWith('http'))
-          ? company.logo
-          : undefined
       const html = await renderAllEmailTemplates({
         companyName,
-        companyLogoUrl,
         clientName: 'John Doe',
         invoiceNumber: 'INV-001',
         invoiceDate: 'Mar 11, 2025',
@@ -201,7 +196,6 @@ export function SettingsPage() {
         pdfNote: 'Thank you for your business. Payment is due within 30 days.',
         statusMessage:
           'This invoice is awaiting payment. Please review the details and process payment by the due date.',
-        statusColor: '#ea580c',
         daysSinceSent: 7,
         daysOverdue: 5,
       })

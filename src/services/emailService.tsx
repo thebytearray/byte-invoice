@@ -1,6 +1,5 @@
 import { createElement } from 'react'
 import { InvoicePDFDocument } from '@/components/invoices/InvoicePDF'
-import { TEAL_500 } from '@/emails/email-theme'
 import {
   renderInvoiceEmail,
   renderOverdueEmail,
@@ -40,32 +39,26 @@ function buildVariables(
   }
 
   let statusMessage = ''
-  let statusColor = TEAL_500
 
   switch (invoice.status) {
     case 'paid':
       statusMessage =
         'Thank you for your payment! This invoice has been marked as paid.'
-      statusColor = '#16a34a'
       break
     case 'overdue':
       statusMessage =
         'This invoice is now overdue. Please arrange payment as soon as possible to avoid any service interruptions.'
-      statusColor = '#dc2626'
       break
     case 'sent':
       statusMessage =
         'This invoice is awaiting payment. Please review the details and process payment by the due date.'
-      statusColor = TEAL_500
       break
     default:
       statusMessage =
         'Please review the attached invoice and process payment by the due date.'
-      statusColor = TEAL_500
   }
 
   variables.statusMessage = statusMessage
-  variables.statusColor = statusColor
 
   const dueDate = new Date(invoice.dueDate)
   const today = new Date()
@@ -120,22 +113,15 @@ export async function sendInvoice(
     ? replacePlaceholders(template.subject, variables)
     : defaultSubject
 
-  const companyLogoUrl =
-    company.logo && (company.logo.startsWith('data:') || company.logo.startsWith('http'))
-      ? company.logo
-      : undefined
-
   const html = await renderInvoiceEmail({
     invoiceNumber: variables.invoiceNumber,
     invoiceDate: variables.invoiceDate,
     clientName: variables.clientName,
     companyName: variables.companyName,
-    companyLogoUrl,
     total: variables.total,
     dueDate: variables.dueDate,
     pdfNote: variables.pdfNote || undefined,
     statusMessage: variables.statusMessage,
-    statusColor: variables.statusColor,
   })
 
   let pdfBase64: string | undefined
@@ -183,11 +169,6 @@ export async function sendReminder(
 
   const variables = buildVariables(invoice, client, company)
 
-  const companyLogoUrl =
-    company.logo && (company.logo.startsWith('data:') || company.logo.startsWith('http'))
-      ? company.logo
-      : undefined
-
   const defaultSubject = `Payment Reminder - Invoice ${variables.invoiceNumber}`
   const subject = template?.subject
     ? replacePlaceholders(template.subject, variables)
@@ -197,7 +178,6 @@ export async function sendReminder(
     invoiceNumber: variables.invoiceNumber,
     clientName: variables.clientName,
     companyName: variables.companyName,
-    companyLogoUrl,
     total: variables.total,
     dueDate: variables.dueDate,
     daysSinceSent: parseInt(variables.daysSinceSent, 10) || 0,
@@ -229,11 +209,6 @@ export async function sendOverdueNotice(
   const variables = buildVariables(invoice, client, company)
   const daysOverdue = parseInt(variables.daysOverdue, 10) || 0
 
-  const companyLogoUrl =
-    company.logo && (company.logo.startsWith('data:') || company.logo.startsWith('http'))
-      ? company.logo
-      : undefined
-
   const defaultSubject = `OVERDUE: Invoice ${variables.invoiceNumber}`
   const subject = template?.subject
     ? replacePlaceholders(template.subject, variables)
@@ -243,7 +218,6 @@ export async function sendOverdueNotice(
     invoiceNumber: variables.invoiceNumber,
     clientName: variables.clientName,
     companyName: variables.companyName,
-    companyLogoUrl,
     total: variables.total,
     dueDate: variables.dueDate,
     daysOverdue,

@@ -1,45 +1,108 @@
 /**
- * Plain utility module for rendering React Email templates to HTML.
- * Uses renderToStaticMarkup from react-dom/server.browser (browser build only)
- * to avoid Node.js APIs (async_hooks, etc.) that fail in Tauri webview.
+ * Plain text email templates. Renders short, professional emails as minimal HTML
+ * for compatibility with email clients (htmlBody).
  */
-import type { ReactElement } from 'react'
-import { createElement } from 'react'
-import { renderToStaticMarkup } from 'react-dom/server.browser'
-import {
-  InvoiceEmail,
-  OverdueEmail,
-  ReminderEmail,
-} from '@/emails'
-import type { InvoiceEmailProps } from '@/emails/InvoiceEmail'
-import type { ReminderEmailProps } from '@/emails/ReminderEmail'
-import type { OverdueEmailProps } from '@/emails/OverdueEmail'
 
-export type { InvoiceEmailProps, ReminderEmailProps, OverdueEmailProps }
+function wrapPlainText(body: string): string {
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.6; color: #333; margin: 0; padding: 16px;">
+<pre style="font-family: inherit; font-size: inherit; white-space: pre-wrap; margin: 0;">${escapeHtml(body)}</pre>
+</body>
+</html>`
+}
 
-const EMAIL_DOCTYPE =
-  '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
 
-function renderToEmailHtml(element: ReactElement): string {
-  const html = renderToStaticMarkup(element)
-  return EMAIL_DOCTYPE + html.replace(/<!DOCTYPE[^>]*>/i, '')
+export interface InvoiceEmailProps {
+  invoiceNumber: string
+  invoiceDate: string
+  clientName: string
+  companyName: string
+  total: string
+  dueDate: string
+  pdfNote?: string
+  statusMessage: string
+}
+
+export interface ReminderEmailProps {
+  invoiceNumber: string
+  clientName: string
+  companyName: string
+  total: string
+  dueDate: string
+  daysSinceSent?: number
+}
+
+export interface OverdueEmailProps {
+  invoiceNumber: string
+  clientName: string
+  companyName: string
+  total: string
+  dueDate: string
+  daysOverdue?: number
 }
 
 export async function renderInvoiceEmail(props: InvoiceEmailProps): Promise<string> {
-  return renderToEmailHtml(createElement(InvoiceEmail, props))
+  const lines: string[] = [
+    `Dear ${props.clientName},`,
+    '',
+    `Please find attached invoice #${props.invoiceNumber} for $${props.total}, due ${props.dueDate}.`,
+    '',
+    props.statusMessage,
+  ]
+  if (props.pdfNote) {
+    lines.push('', `Note: ${props.pdfNote}`)
+  }
+  lines.push('', 'If you have any questions, please reach out.', '', `Best regards,`, props.companyName)
+  return wrapPlainText(lines.join('\n'))
 }
 
 export async function renderReminderEmail(props: ReminderEmailProps): Promise<string> {
-  return renderToEmailHtml(createElement(ReminderEmail, props))
+  const daysNote =
+    props.daysSinceSent && props.daysSinceSent > 0
+      ? ` (sent ${props.daysSinceSent} day${props.daysSinceSent !== 1 ? 's' : ''} ago)`
+      : ''
+  const lines: string[] = [
+    `Dear ${props.clientName},`,
+    '',
+    `This is a friendly reminder that invoice #${props.invoiceNumber} for $${props.total} is awaiting payment${daysNote}. Due date: ${props.dueDate}.`,
+    '',
+    'Please process at your earliest convenience.',
+    '',
+    `Best regards,`,
+    props.companyName,
+  ]
+  return wrapPlainText(lines.join('\n'))
 }
 
 export async function renderOverdueEmail(props: OverdueEmailProps): Promise<string> {
-  return renderToEmailHtml(createElement(OverdueEmail, props))
+  const daysNote =
+    props.daysOverdue && props.daysOverdue > 0
+      ? ` (${props.daysOverdue} day${props.daysOverdue !== 1 ? 's' : ''} overdue)`
+      : ''
+  const lines: string[] = [
+    `Dear ${props.clientName},`,
+    '',
+    `Invoice #${props.invoiceNumber} for $${props.total} is now overdue${daysNote}. Original due date: ${props.dueDate}.`,
+    '',
+    'Please contact us to resolve this matter.',
+    '',
+    `Best regards,`,
+    props.companyName,
+  ]
+  return wrapPlainText(lines.join('\n'))
 }
 
 export interface RenderAllTemplatesProps {
   companyName: string
-  companyLogoUrl?: string
   clientName: string
   invoiceNumber: string
   invoiceDate: string
@@ -47,7 +110,6 @@ export interface RenderAllTemplatesProps {
   total: string
   pdfNote?: string
   statusMessage: string
-  statusColor: string
   daysSinceSent: number
   daysOverdue: number
 }
@@ -61,18 +123,15 @@ export async function renderAllEmailTemplates(
       invoiceDate: props.invoiceDate,
       clientName: props.clientName,
       companyName: props.companyName,
-      companyLogoUrl: props.companyLogoUrl,
       total: props.total,
       dueDate: props.dueDate,
       pdfNote: props.pdfNote,
       statusMessage: props.statusMessage,
-      statusColor: props.statusColor,
     }),
     renderReminderEmail({
       invoiceNumber: props.invoiceNumber,
       clientName: props.clientName,
       companyName: props.companyName,
-      companyLogoUrl: props.companyLogoUrl,
       total: props.total,
       dueDate: props.dueDate,
       daysSinceSent: props.daysSinceSent,
@@ -81,7 +140,6 @@ export async function renderAllEmailTemplates(
       invoiceNumber: props.invoiceNumber,
       clientName: props.clientName,
       companyName: props.companyName,
-      companyLogoUrl: props.companyLogoUrl,
       total: props.total,
       dueDate: props.dueDate,
       daysOverdue: props.daysOverdue,

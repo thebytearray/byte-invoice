@@ -22,7 +22,7 @@ If you want to report a security problem, please read our [Security Policy](.git
 
 ## License
 
-This project is licensed under the GPLv3 - see the [License](/LICENSE) file for details.
+This project is licensed under the GPLv3 - see the [License](LICENSE.md) file for details.
 
 ## Installation Guide
 

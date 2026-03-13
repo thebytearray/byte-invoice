@@ -10,7 +10,7 @@ Thanks for your time and interest in contributing to the Byte Invoice project. A
 
 ## Contributing Code
 
-* By contributing to this project, you share your code under the GPLv3 license, as specified in the [License](/LICENSE) file.
+* By contributing to this project, you share your code under the GPLv3 license, as specified in the [License](../LICENSE.md) file.
 * Please ensure your changes align with the existing code style and pass the linter (`npm run lint`).
 
 ## Creating an Issue
